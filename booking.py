@@ -10,16 +10,13 @@ logging.basicConfig(level=logging.INFO,
 MAX_DELAY_DAY = 2
 
 
-def get_config():
-    """ 获取配置文件，内容需要自己修改 """
-    return {
-        'sid': '',  # 学号
-        'password': '',  # 公共数据库密码
-        'roomNo': 'C425',  # 想要预订的房间号，在 rooms.json 中找到想要预订的房间，填写对应的 roomNo
-        'startTime': '08:00',  # 预订的开始时间，24小时制
-        'endTime': '08:50',  # 预订结束时间，注意总时间不能超过4小时
-        'delayDay': 2  # 预订日期，今天是0，明天是1，后天是2。一般不用修改。
-    }
+def get_config(delayDay=2):
+    """ 获取配置文件,从同目录下的conf.json文件加载 """
+    file_path = os.path.join(os.path.dirname(__file__), 'conf.json')
+    with open(file_path) as cf:
+        conf = json.load(cf)
+        conf['delayDay'] = delayDay
+        return conf
 
 
 def check_config(config):
@@ -78,7 +75,8 @@ class Booking(object):
                 self.selected_room = r
                 break
         if not self.selected_room:
-            raise Exception("can't find roomNo: {} in room.json".format(config['roomNo']))
+            raise Exception(
+                "can't find roomNo: {} in room.json".format(config['roomNo']))
         session = requests.Session()
         session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
@@ -122,7 +120,7 @@ class Booking(object):
         that_day = self.__get_delay_day(self.config['delayDay'])
         start_time = self.config['startTime']
         end_time = self.config['endTime']
-        # 预约 post 的表单中的格式为1800, 表示18：00，去掉小时和分钟的冒号
+        # 预约 post 的表单中开始时间的格式为1800, 表示18：00，去掉小时和分钟的冒号
         start_time = start_time[0:2] + start_time[3:5]
         end_time = end_time[0:2] + end_time[3:5]
         # 其中如果是08:00, 则为800，去掉前面的0
@@ -140,8 +138,7 @@ class Booking(object):
             'end': that_day + ' ' + self.config['endTime'],
             'start_time': start_time,
             'end_time': end_time,
-            'act': 'set_resv',
-            '_': int(time.time())
+            'act': 'set_resv'
         }
         # 如果预约的是后天，而且当前时间没有超过9点，则等待。
         if (self.config['delayDay'] == self.max_delay_day):
@@ -155,7 +152,9 @@ class Booking(object):
             logging.info('wait {} s'.format(sleep_time))
             # 开始等待
             time.sleep(sleep_time)
-        # TODO（ligand）: 发送之前生成 拼接的url。
+
+        payload['_'] = str(int(time.time()*1000))
+        # 发送预订请求
         r = self.__get(self.booking_url, payload)
 
         # 解析预订结果
