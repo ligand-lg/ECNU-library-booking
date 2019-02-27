@@ -1,8 +1,8 @@
-# 华东师大中北图书馆ic管理系统自动预订
+# 华东师大图书馆ic管理系统自动预订(中北+闵行)
 
 ## 需求
 
-预约中北图书馆4楼单间（小黑屋）。每天21点开放后天预约，写了个 python 脚本实现自动预约。
+预约中北图书馆4楼单间（小黑屋）和闵行图书馆裙楼五楼单间。每天21点开放后天预约，写了个 python 脚本实现自动预约。
 
 ## 使用说明
 
@@ -19,7 +19,7 @@
 
 配合 crontab 定时任务可以实现每天自动预订某一个房间。例如:
 
-  `59 20 * * * /home/fry/anaconda3/bin/python /home/fry/ECNU-library-booking/booking.py &>> /home/fry/booking.log`
+  `59 20 * * * /home/admin/anaconda3/bin/python /home/admin/ECNU-library-booking/booking.py &>> /home/admin/booking.log`
 
 ps： 某些房间也存在大神的自动脚本预订，此脚本干不过，遇到这种情况请更换预订房间。
 

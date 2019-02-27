@@ -50,10 +50,13 @@ def check_config(config):
 def get_rooms():
     """ 可以选择的房间. 从当前目录下的 rooms.json 文件中读取 """
     rooms = []
-    file_name = 'room.json'
-    file_path = os.path.join(os.path.dirname(__file__), file_name)
-    with open(file_path) as f:
-        rooms = json.load(f)['data']
+    zhongbei_file_name = 'zhongbei_rooms.json'
+    minghang_file_name = 'minghang_rooms.json'
+    dir_path = os.path.dirname(__file__)
+    with open(os.path.join(dir_path, zhongbei_file_name)) as f:
+        rooms.extend(json.load(f)['data'])
+    with open(os.path.join(dir_path, minghang_file_name)) as f:
+        rooms.extend(json.load(f)['data'])
     return rooms
 
 
@@ -76,7 +79,7 @@ class Booking(object):
                 break
         if not self.selected_room:
             raise Exception(
-                "can't find roomNo: {} in room.json".format(config['roomNo']))
+                "目标房间:{},不存在！".format(config['roomNo']))
         session = requests.Session()
         session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
@@ -107,7 +110,7 @@ class Booking(object):
             logging.info('登录成功')
             return True
         else:
-            logging.error('登录失败')
+            logging.error('登录失败,请检查账号、密码是否配置正确！')
             return False
 
     def __get_delay_day(self, delay):
