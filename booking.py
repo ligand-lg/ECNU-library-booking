@@ -13,7 +13,7 @@ MAX_DELAY_DAY = 2
 def get_config(delayDay=2):
     """ 获取配置文件,从同目录下的conf.json文件加载 """
     file_path = os.path.join(os.path.dirname(__file__), 'conf.json')
-    with open(file_path, encoding="uft-8") as cf:
+    with open(file_path, encoding="utf-8") as cf:
         conf = json.load(cf)
         conf['delayDay'] = delayDay
         return conf
