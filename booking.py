@@ -13,7 +13,7 @@ MAX_DELAY_DAY = 2
 def get_config(delayDay=2):
     """ 获取配置文件,从同目录下的conf.json文件加载 """
     file_path = os.path.join(os.path.dirname(__file__), 'conf.json')
-    with open(file_path) as cf:
+    with open(file_path, encoding="uft-8") as cf:
         conf = json.load(cf)
         conf['delayDay'] = delayDay
         return conf
@@ -53,9 +53,9 @@ def get_rooms():
     zhongbei_file_name = 'zhongbei_rooms.json'
     minghang_file_name = 'minghang_rooms.json'
     dir_path = os.path.dirname(__file__)
-    with open(os.path.join(dir_path, zhongbei_file_name)) as f:
+    with open(os.path.join(dir_path, zhongbei_file_name), encoding="utf-8") as f:
         rooms.extend(json.load(f)['data'])
-    with open(os.path.join(dir_path, minghang_file_name)) as f:
+    with open(os.path.join(dir_path, minghang_file_name), encoding="utf-8") as f:
         rooms.extend(json.load(f)['data'])
     return rooms
 
