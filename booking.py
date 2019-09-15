@@ -22,11 +22,11 @@ def get_config(delayDay=2):
 def check_config(config):
     sid = config.get('sid', None)
     if not (isinstance(sid, str) and len(sid) > 1):
-        logging.error('sid: 学号填写有误')
+        logging.error('sid: 配置文件中学号为空！')
         return False
     password = config.get('password', None)
     if not (isinstance(password, str) and len(password) > 1):
-        logging.error('password: 公共数据库密码有误')
+        logging.error('password: 配置文件中密码为空！')
         return False
     roomNo = config.get('roomNo', None)
     if not (isinstance(roomNo, str) and len(roomNo) == 4):
@@ -38,7 +38,7 @@ def check_config(config):
         return False
     endTime = config.get('endTime', None)
     if not (isinstance(endTime, str) and len(endTime) == 5):
-        logging.error('endTime: 结束事件有误')
+        logging.error('endTime: 结束时间有误')
         return False
     delayDay = config.get('delayDay', None)
     if not (isinstance(delayDay, int) and delayDay <= MAX_DELAY_DAY):
@@ -158,6 +158,7 @@ class Booking(object):
 
         payload['_'] = str(int(time.time()*1000))
         # 发送预订请求
+        logging.info('request sending...')
         r = self.__get(self.booking_url, payload)
 
         # 解析预订结果
