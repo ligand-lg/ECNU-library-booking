@@ -116,11 +116,19 @@ func getBookingReq(booking Booking) *http.Request {
 	return req
 }
 
-// 对比当前时间与9点的间隔, 当前策略：20:59:50 开始
-func checkTime() {
+/* 对比当前时间与9点的间隔
+vip: 20:59:50
+非vip: 20:59:55
+*/
+
+func checkTime(isVip bool) {
+	desStr := "20:59:55"
+	if isVip {
+		desStr = "20:59:50"
+	}
 	layout := "15:04:05"
 	nowStr := time.Now().Format(layout)
-	des, _ := time.Parse(layout, "20:59:50")
+	des, _ := time.Parse(layout, desStr)
 	now, _ := time.Parse(layout, nowStr)
 	diff := des.Sub(now)
 	if diff > 0*time.Second {
@@ -136,7 +144,7 @@ func main() {
 
 	conf := GetConf()
 	if !DEBUG {
-		checkTime()
+		checkTime(conf.vip)
 	}
 
 	// 1. 通过登录获取带认证的cookie

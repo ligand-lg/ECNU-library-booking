@@ -31,13 +31,16 @@ type Booking struct {
 type Config struct {
 	sid        string
 	pwd        string
+	vip        bool
 	allBooking []Booking
 }
 
+// vip 优先预定
 type _config struct {
 	Sid      string      `json:"sid"`
 	Password string      `json:"password"`
 	RoomNo   string      `json:"roomNo"`
+	Vip      bool        `json:"vip"`
 	Duration [][2]string `json:"duration"`
 }
 
@@ -149,6 +152,7 @@ func GetConf() (conf Config) {
 		pwd:        jsonObj.Password,
 		allBooking: allBooking,
 	}
+	conf.vip = jsonObj.Vip
 	if !checkConf(conf) {
 		log.Fatalln("配置文件存在问题。")
 	}
