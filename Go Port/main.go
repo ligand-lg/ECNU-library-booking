@@ -134,6 +134,7 @@ func checkTime(isVip bool) {
 	if diff > 0*time.Second {
 		log.Println("等待：", diff)
 		time.Sleep(diff)
+		log.Println("等待结束")
 	}
 }
 
@@ -143,9 +144,6 @@ func main() {
 	log.Println("================= Start ===================")
 
 	conf := GetConf()
-	if !DEBUG {
-		checkTime(conf.vip)
-	}
 
 	// 1. 通过登录获取带认证的cookie
 	sessionId, loginSucceed := login(conf.sid, conf.pwd)
@@ -155,6 +153,17 @@ func main() {
 		return
 	}
 	log.Println("登录成功")
+	if !DEBUG {
+		checkTime(conf.vip)
+		// 为了防止 session 过期，再次登录
+		sessionId, loginSucceed = login(conf.sid, conf.pwd)
+		if !loginSucceed {
+			log.Println("登录失败！")
+			log.Println(sessionId)
+			return
+		}
+		log.Println("再次登录成功")
+	}
 
 	// 2. 通过带认证的 cookie 构造带参数的request请求
 	cookie := http.Cookie{Name: sessionIdName, Value: sessionId}
