@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -216,4 +217,7 @@ func main() {
 		}
 	}
 	log.Println("================= Over ===================")
+	var __end string
+	fmt.Println("按回车键退出程序...")
+	_, _ = fmt.Scanln(&__end)
 }
